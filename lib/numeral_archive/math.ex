@@ -1,4 +1,4 @@
-defmodule LossyAverage.Math do
+defmodule NumeralArchive.Math do
   def mean(sum, count)
       when is_nil(sum)
       when is_nil(count)

@@ -1,8 +1,8 @@
-defmodule LossyAverage.Series do
+defmodule NumeralArchive.Series do
   @doc """
   Called once per minute.
   """
-  alias LossyAverage.Series.Stage
+  alias NumeralArchive.Series.Stage
 
   @init_sum 0
   @init_count 0
@@ -15,7 +15,7 @@ defmodule LossyAverage.Series do
        {0, 0},
        # 1m->2m, 2m->3m, 3m->4m, 4m->5m
        [nil, nil, nil, nil, nil],
-       # 5m->10m, 10m->15m, 15m->20m, 20m->25m
+       # 5m->10m, 10m->15m, 15m->20m, 20m->25m, 25m->30m
        [nil, nil, nil, nil, nil]
      ]}
   end

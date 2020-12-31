@@ -1,14 +1,14 @@
-defmodule LossyAverage.Series.Stage do
+defmodule NumeralArchive.Series.Stage do
   @moduledoc """
   Helpers for manipulating the each stage.
   """
-  alias LossyAverage.Math
+  alias NumeralArchive.Math
 
   @doc """
   When first stage, average is the `sum / count`
   so slightly different from calulating other averages.
   """
-  def calculate_stage_new_average(series = [{sum, count} | _rest], 1) do
+  def calculate_stage_new_average([{sum, count} | _rest], 1) do
     Math.mean(sum, count)
   end
 

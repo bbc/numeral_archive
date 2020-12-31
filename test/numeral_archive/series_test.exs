@@ -1,6 +1,6 @@
-defmodule LossyAverage.SeriesTest do
+defmodule NumeralArchive.SeriesTest do
   use ExUnit.Case
-  alias LossyAverage.Series
+  alias NumeralArchive.Series
 
   test "increments record to keep average of" do
     series = Series.init()
