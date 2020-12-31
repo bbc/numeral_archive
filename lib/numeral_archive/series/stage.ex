@@ -8,19 +8,25 @@ defmodule NumeralArchive.Series.Stage do
   When first stage, average is the `sum / count`
   so slightly different from calulating other averages.
   """
-  def calculate_stage_new_average([{sum, count} | _rest], 1) do
-    Math.mean(sum, count)
+  def calculate_stage_new_average(_series, 0) do
+    {0, 0}
   end
 
   def calculate_stage_new_average(series, stage_index) do
-    previous_stage(series, stage_index)
-    |> Math.mean()
+    previous_stage(series, stage_index) |> Math.mean()
   end
 
   def push_new_average(series, stage_index, average) do
     replace_stage(series, stage_index, fn stage ->
       stage_size = Enum.count(stage)
       Enum.take([average | stage], stage_size)
+    end)
+  end
+
+  def normalise_stage(stage) do
+    Enum.map(stage, fn
+      {sum, count} -> Math.mean(sum, count)
+      value -> value
     end)
   end
 

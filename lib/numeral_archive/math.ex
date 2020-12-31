@@ -7,5 +7,19 @@ defmodule NumeralArchive.Math do
 
   def mean(sum, count), do: sum / count
 
-  def mean(array), do: Enum.sum(array) / Enum.count(array)
+  def mean(array) do
+    sum =
+      Enum.reduce(array, 0, fn
+        {sum, count}, total ->
+          mean(sum / count) + total
+
+        value, total ->
+          total + value
+      end)
+
+    sum / Enum.count(array)
+
+    # IO.inspect(array, label: "array")
+    # Enum.sum(array) / Enum.count(array)
+  end
 end

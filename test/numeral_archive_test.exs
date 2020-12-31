@@ -3,8 +3,7 @@ defmodule NumeralArchiveTest do
 
   test "builds array representation of a series" do
     series = [
-      {700, 5},
-      [500.00, 200, 400, 100, 500],
+      [{700, 5}, 200, 400, 100, 500],
       [300.00, 200, 100, 700, 200]
     ]
 
@@ -32,12 +31,10 @@ defmodule NumeralArchiveTest do
     test "when average is increasing test", %{incr_data: data_points} do
       actual = process_data_set(NumeralArchive.new_series(), data_points)
 
-      assert {51,
-              [
-                {0, 0},
-                [500.0, 494.5, 484.5, 474.5, 464.5],
-                [474.5, 424.5, 374.5, 324.5, 274.5]
-              ]} == actual
+      assert {
+               51,
+               [[{0, 0}, 500.0, 494.5, 484.5, 474.5], [483.6, 434.5, 384.5, 334.5, 284.5]]
+             } == actual
 
       assert [nil, 483.6, 374.5] == NumeralArchive.to_array(elem(actual, 1))
     end
@@ -47,9 +44,8 @@ defmodule NumeralArchiveTest do
 
       assert {51,
               [
-                {0, 0},
-                [0, 5.5, 15.5, 25.5, 35.5],
-                [25.5, 75.5, 125.5, 175.5, 225.5]
+                [{0, 0}, 0.0, 5.5, 15.5, 25.5],
+                [16.4, 65.5, 115.5, 165.5, 215.5]
               ]} == actual
 
       assert [nil, 16.4, 125.5] == NumeralArchive.to_array(elem(actual, 1))

@@ -9,9 +9,11 @@ defmodule NumeralArchive do
   defdelegate increment(series, value), to: NumeralArchive.Series
 
   def to_array(series) do
-    Enum.map(series, fn
-      {sum, count} -> Math.mean(sum, count)
-      averages when is_list(averages) -> Math.mean(averages)
+    series
+    |> Enum.with_index()
+    |> Enum.flat_map(fn
+      {averages, 0} -> [Enum.at(averages, 0), Math.mean(averages)]
+      {averages, _index} -> [Math.mean(averages)]
     end)
   end
 end
