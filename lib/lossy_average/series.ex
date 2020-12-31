@@ -11,8 +11,11 @@ defmodule LossyAverage.Series do
   def init do
     {0,
      [
+       # 0->1m (building the minute's average)
        {0, 0},
+       # 1m->2m, 2m->3m, 3m->4m, 4m->5m
        [nil, nil, nil, nil, nil],
+       # 5m->10m, 10m->15m, 15m->20m, 20m->25m
        [nil, nil, nil, nil, nil]
      ]}
   end
@@ -58,20 +61,3 @@ defmodule LossyAverage.Series do
     Stage.push_new_average(series, stage_index, new_average)
   end
 end
-
-# internal data structure:
-# %{
-#   "an-origin" => [
-#     {sum, count},
-#     [<avg min ago>, <avg 2 mins ago>, <avg 3 mins ago>, <avg 4 mins ago>, <avg 5 mins ago>],
-#     [<5 mins ago average>, <10 mins ago average>, <15 mins ago average>, <20 mins ago average>, <25 mins ago average>, <30 mins ago average>]
-#   ]
-# }
-
-# displayed data structure:
-
-# %{
-#   "an-origin" => [<avg last minute>, <avg 5 over last 5 mins>, <avg over last 30 mins>]
-# }
-
-# Every 1 minute, position 1 moves into first position in list 2.
