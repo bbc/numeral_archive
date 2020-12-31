@@ -25,6 +25,13 @@ defmodule LossyAverage.Series do
     |> increment_tick_counter(tick_counter)
   end
 
+  def increment({tick_counter, [{sum, count} | stages]}, value) do
+    {
+      tick_counter,
+      [{sum + value, count + 1} | stages]
+    }
+  end
+
   defp increment_tick_counter(series, tick_counter), do: {tick_counter + 1, series}
 
   defp which_stages(counter) when rem(counter, @stage_size) == 0 and counter >= @stage_size do

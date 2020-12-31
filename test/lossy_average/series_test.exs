@@ -2,6 +2,19 @@ defmodule LossyAverage.SeriesTest do
   use ExUnit.Case
   alias LossyAverage.Series
 
+  test "increments record to keep average of" do
+    series = Series.init()
+
+    assert {
+             0,
+             [
+               {5000, 1},
+               [nil, nil, nil, nil, nil],
+               [nil, nil, nil, nil, nil]
+             ]
+           } == Series.increment(series, 5_000)
+  end
+
   test "calculates very first minute average, and inserts at stage one" do
     sum = 5000
     count = 10
