@@ -3,6 +3,7 @@ defmodule LossyAverage.Series do
   Called once per minute.
   """
 
+  alias LossyAverage.Math
   alias LossyAverage.Series.Stage
 
   @init_sum 0
@@ -16,27 +17,18 @@ defmodule LossyAverage.Series do
     ]
   end
 
-  def tick(series) do
-    series
-    |> push_average_to_store()
+  def tick(series, tick_stages) do
+    push_average_to_store(series, tick_stages)
+    |> reset_first_minute()
   end
 
-  defp push_average_to_store(series = [{sum, count} | [first_period | periods]]) do
-    last_min_average = sum / count
-
-    first_period_with_new_average = [last_min_average | first_period]
-
-    # Based on the time, which stages need to be adjusted?
-    # -> each minute, stage 1
-    # -> each 5 minutes, stage 2
-    # -> each 10 minutes, stage 3
-
-    # SHOULD ALWAYS BE IN DECREASING ORDER.
-    stages_to_push_averages = [1]
-
-    stages_to_push_averages
+  defp push_average_to_store(
+         series,
+         tick_stages
+       ) do
+    tick_stages
+    |> Math.sort_descending()
     |> Enum.reduce(series, &calc_new_average/2)
-    |> reset_first_minute()
   end
 
   defp reset_first_minute(series) do
