@@ -39,8 +39,8 @@ defmodule LossyAverage.SeriesTest do
 
     assert [
              {0, 0},
-             [500.00, 200, 400, 100, 500],
-             [300.00, nil, nil, nil, nil]
+             [500, 200, 400, 100, 500],
+             [300, nil, nil, nil, nil]
            ] == Series.tick(series, tick_stages)
   end
 
@@ -58,8 +58,8 @@ defmodule LossyAverage.SeriesTest do
 
     assert [
              {0, 0},
-             [500.00, 200, 400, 100, 500],
-             [300.00, 200, 100, 700, nil]
+             [500, 200, 400, 100, 500],
+             [300, 200, 100, 700, nil]
            ] == Series.tick(series, tick_stages)
   end
 
@@ -77,8 +77,8 @@ defmodule LossyAverage.SeriesTest do
 
     assert [
              {0, 0},
-             [500.00, 200, 400, 100, 500],
-             [300.00, 200, 100, 700, 200]
+             [500, 200, 400, 100, 500],
+             [300, 200, 100, 700, 200]
            ] == Series.tick(series, tick_stages)
   end
 end

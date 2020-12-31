@@ -1,7 +1,8 @@
 defmodule LossyAverage.Math do
   def mean(sum, count)
       when is_nil(sum)
-      when is_nil(count),
+      when is_nil(count)
+      when count == 0,
       do: nil
 
   def mean(sum, count) do
