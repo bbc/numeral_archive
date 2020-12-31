@@ -5,6 +5,8 @@ defmodule LossyAverage do
   alias LossyAverage.Math
 
   defdelegate new_series(), to: LossyAverage.Series, as: :init
+  defdelegate tick(series), to: LossyAverage.Series
+  defdelegate increment(series, value), to: LossyAverage.Series
 
   def to_array(series) do
     Enum.map(series, fn
