@@ -1,24 +1,21 @@
 defmodule NumeralArchive.Series do
-  alias NumeralArchive.Series.Stage
+  alias NumeralArchive.Series.{Stage, TimeInterval}
 
-  @init_sum 0
-  @init_count 0
   @stage_size 5
+  @stage_count 2
+  @all_stages [1, 0]
+  @first_stage [0]
 
   def init do
-    {0,
-     [
-       [{@init_sum, @init_count}, nil, nil, nil, nil],
-       [nil, nil, nil, nil, nil]
-     ]}
+    stage = List.duplicate(TimeInterval.new(), @stage_size)
+    {0, List.duplicate(stage, @stage_count)}
   end
 
   def tick({tick_counter, series}) do
     tick_stages = which_stages(tick_counter)
 
     series
-    |> normalise()
-    |> push_average_to_store(tick_stages)
+    |> tick_stages(tick_stages)
     |> increment_tick_counter(tick_counter)
   end
 
@@ -29,29 +26,34 @@ defmodule NumeralArchive.Series do
     }
   end
 
-  def normalise(series) do
-    Enum.map(series, &Stage.normalise_stage/1)
+  def stage_count(_series = [stage_one, _rest]) do
+    Enum.count(stage_one)
   end
 
   defp increment_tick_counter(series, tick_counter), do: {tick_counter + 1, series}
 
   defp which_stages(counter) when rem(counter, @stage_size) == 0 and counter >= @stage_size do
-    [1, 0]
+    @all_stages
   end
 
-  defp which_stages(_counter), do: [0]
+  defp which_stages(_counter), do: @first_stage
 
-  defp push_average_to_store(
+  defp tick_stages(
          series,
          tick_stages
        ) do
     tick_stages
-    |> Enum.reduce(series, &calc_new_average/2)
+    |> Enum.reduce(series, &promote_time_interval/2)
   end
 
-  defp calc_new_average(stage_index, series) do
-    new_average = Stage.calculate_stage_new_average(series, stage_index)
+  defp promote_time_interval(stage_index = 0, series) do
+    Stage.tick_stage(series, stage_index, TimeInterval.new())
+  end
 
-    Stage.push_new_average(series, stage_index, new_average)
+  defp promote_time_interval(stage_index, series) do
+    previous_stage = Stage.previous_stage(series, stage_index)
+    time_interval = Stage.time_interval(previous_stage)
+
+    Stage.tick_stage(series, stage_index, time_interval)
   end
 end

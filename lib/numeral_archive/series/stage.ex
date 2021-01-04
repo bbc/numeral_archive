@@ -1,28 +1,17 @@
 defmodule NumeralArchive.Series.Stage do
   @moduledoc """
-  Helpers for manipulating the each stage.
+  Helpers for manipulating a stage.
   """
-  alias NumeralArchive.Math
+  alias NumeralArchive.Series.TimeInterval
 
-  def calculate_stage_new_average(_series, 0) do
-    {0, 0}
+  def time_interval(stage) do
+    TimeInterval.reduce_multiple(stage)
   end
 
-  def calculate_stage_new_average(series, stage_index) do
-    previous_stage(series, stage_index) |> Math.mean()
-  end
-
-  def push_new_average(series, stage_index, average) do
+  def tick_stage(series, stage_index, new_time_interval_data) do
     replace_stage(series, stage_index, fn stage ->
       stage_size = Enum.count(stage)
-      Enum.take([average | stage], stage_size)
-    end)
-  end
-
-  def normalise_stage(stage) do
-    Enum.map(stage, fn
-      {sum, count} -> Math.mean(sum, count)
-      value -> value
+      Enum.take([new_time_interval_data | stage], stage_size)
     end)
   end
 
@@ -35,7 +24,7 @@ defmodule NumeralArchive.Series.Stage do
     List.replace_at(series, stage_index, value)
   end
 
-  defp previous_stage(series, stage_index) do
+  def previous_stage(series, stage_index) do
     Enum.at(series, stage_index - 1)
   end
 end
