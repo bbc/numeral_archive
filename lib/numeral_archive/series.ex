@@ -1,7 +1,4 @@
 defmodule NumeralArchive.Series do
-  @doc """
-  Called once per minute.
-  """
   alias NumeralArchive.Series.Stage
 
   @init_sum 0
