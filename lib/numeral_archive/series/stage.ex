@@ -4,10 +4,6 @@ defmodule NumeralArchive.Series.Stage do
   """
   alias NumeralArchive.Math
 
-  @doc """
-  When first stage, average is the `sum / count`
-  so slightly different from calulating other averages.
-  """
   def calculate_stage_new_average(_series, 0) do
     {0, 0}
   end

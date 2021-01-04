@@ -2,7 +2,7 @@ defmodule NumeralArchive do
   @moduledoc """
   Documentation for NumeralArchive.
   """
-  alias NumeralArchive.Math
+  alias NumeralArchive.{Math, Series}
 
   defdelegate new_series(), to: NumeralArchive.Series, as: :init
   defdelegate tick(series), to: NumeralArchive.Series
@@ -10,6 +10,7 @@ defmodule NumeralArchive do
 
   def to_array(series) do
     series
+    |> Series.normalise()
     |> Enum.with_index()
     |> Enum.flat_map(fn
       {averages, 0} -> [Enum.at(averages, 0), Math.mean(averages)]

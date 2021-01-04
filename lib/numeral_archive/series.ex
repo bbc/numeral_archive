@@ -11,9 +11,7 @@ defmodule NumeralArchive.Series do
   def init do
     {0,
      [
-       # 0m->1m, 1m->2m, 2m->3m, 3m->4m, 4m->5m
        [{@init_sum, @init_count}, nil, nil, nil, nil],
-       # 5m->10m, 10m->15m, 15m->20m, 20m->25m, 25m->30m
        [nil, nil, nil, nil, nil]
      ]}
   end
@@ -22,7 +20,7 @@ defmodule NumeralArchive.Series do
     tick_stages = which_stages(tick_counter)
 
     series
-    |> Enum.map(&Stage.normalise_stage/1)
+    |> normalise()
     |> push_average_to_store(tick_stages)
     |> increment_tick_counter(tick_counter)
   end
@@ -32,6 +30,10 @@ defmodule NumeralArchive.Series do
       tick_counter,
       [[{sum + value, count + 1} | first_stage_rest] | stages]
     }
+  end
+
+  def normalise(series) do
+    Enum.map(series, &Stage.normalise_stage/1)
   end
 
   defp increment_tick_counter(series, tick_counter), do: {tick_counter + 1, series}

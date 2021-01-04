@@ -7,7 +7,7 @@ defmodule NumeralArchiveTest do
       [300.00, 200, 100, 700, 200]
     ]
 
-    assert [140, 340, 300] == NumeralArchive.to_array(series)
+    assert [140, 268, 300] == NumeralArchive.to_array(series)
   end
 
   def process_data_set(series, data_set) do
@@ -36,7 +36,7 @@ defmodule NumeralArchiveTest do
                [[{0, 0}, 500.0, 494.5, 484.5, 474.5], [483.6, 434.5, 384.5, 334.5, 284.5]]
              } == actual
 
-      assert [nil, 483.6, 374.5] == NumeralArchive.to_array(elem(actual, 1))
+      assert [nil, 488.375, 384.32] == NumeralArchive.to_array(elem(actual, 1))
     end
 
     test "when average is decreasing test", %{decr_data: data_points} do
@@ -48,7 +48,7 @@ defmodule NumeralArchiveTest do
                 [16.4, 65.5, 115.5, 165.5, 215.5]
               ]} == actual
 
-      assert [nil, 16.4, 125.5] == NumeralArchive.to_array(elem(actual, 1))
+      assert [nil, 11.625, 115.67999999999999] == NumeralArchive.to_array(elem(actual, 1))
     end
   end
 end

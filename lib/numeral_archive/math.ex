@@ -8,18 +8,20 @@ defmodule NumeralArchive.Math do
   def mean(sum, count), do: sum / count
 
   def mean(array) do
-    sum =
-      Enum.reduce(array, 0, fn
-        {sum, count}, total ->
-          mean(sum / count) + total
+    nums = numbers_only(array)
 
-        value, total ->
-          total + value
-      end)
+    Enum.reduce(nums, 0, fn
+      {sum, count}, total ->
+        mean(sum / count) + total
 
-    sum / Enum.count(array)
-
-    # IO.inspect(array, label: "array")
-    # Enum.sum(array) / Enum.count(array)
+      value, total ->
+        total + value
+    end)
+    |> case do
+      0 -> 0
+      sum -> sum / Enum.count(nums)
+    end
   end
+
+  defp numbers_only(arr), do: Enum.filter(arr, &is_number/1)
 end
