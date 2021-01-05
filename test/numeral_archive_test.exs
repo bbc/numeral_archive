@@ -48,7 +48,7 @@ defmodule NumeralArchiveTest do
     test "a small data set", %{fixture_one: data_points} do
       actual = process_data_set(NumeralArchive.new_series(), data_points)
 
-      assert {2,
+      assert {3,
               [
                 [{0, 0}, {305, 6}, {180, 5}, {0, 0}, {0, 0}],
                 [{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}]
@@ -68,15 +68,15 @@ defmodule NumeralArchiveTest do
     test "many ticks", %{fixture_two: data_points} do
       actual = process_data_set(NumeralArchive.new_series(), data_points)
 
-      assert {201,
+      assert {202,
               [
                 [{0, 0}, {200, 1}, {199, 1}, {198, 1}, {197, 1}],
-                [{990, 5}, {965, 5}, {940, 5}, {915, 5}, {890, 5}]
+                [{985, 5}, {960, 5}, {935, 5}, {910, 5}, {885, 5}]
               ]} == actual
 
       first_time_period_average = nil
       first_stage_average = 198.5
-      second_stage_average = 188.0
+      second_stage_average = 187.0
 
       assert [
                first_time_period_average,
@@ -88,32 +88,32 @@ defmodule NumeralArchiveTest do
     test "when average is increasing test", %{incr_data: data_points} do
       actual = process_data_set(NumeralArchive.new_series(), data_points)
 
-      assert {167,
+      assert {168,
               [
                 [{0, 0}, {1497, 3}, {1488, 3}, {1479, 3}, {1470, 3}],
-                [{7350, 15}, {7125, 15}, {6900, 15}, {6675, 15}, {6450, 15}]
+                [{7305, 15}, {7080, 15}, {6855, 15}, {6630, 15}, {6405, 15}]
               ]} == actual
 
-      assert [nil, 494.5, 460.0] == NumeralArchive.to_array(elem(actual, 1))
+      assert [nil, 494.5, 457.0] == NumeralArchive.to_array(elem(actual, 1))
       expected_summary = ~s(0m -> 1m ago: No data.
 0m -> 5m ago: 494.5 average.
-5m -> 30m ago: 460.0 average.)
+5m -> 30m ago: 457.0 average.)
       assert expected_summary == NumeralArchive.summary(elem(actual, 1))
     end
 
     test "when average is decreasing test", %{decr_data: data_points} do
       actual = process_data_set(NumeralArchive.new_series(), data_points)
 
-      assert {167,
+      assert {168,
               [
                 [{0, 0}, {3, 3}, {12, 3}, {21, 3}, {30, 3}],
-                [{150, 15}, {375, 15}, {600, 15}, {825, 15}, {1050, 15}]
+                [{195, 15}, {420, 15}, {645, 15}, {870, 15}, {1095, 15}]
               ]} == actual
 
-      assert [nil, 5.5, 40.0] == NumeralArchive.to_array(elem(actual, 1))
+      assert [nil, 5.5, 43.0] == NumeralArchive.to_array(elem(actual, 1))
       expected_summary = ~s(0m -> 1m ago: No data.
 0m -> 5m ago: 5.5 average.
-5m -> 30m ago: 40.0 average.)
+5m -> 30m ago: 43.0 average.)
       assert expected_summary == NumeralArchive.summary(elem(actual, 1))
     end
   end

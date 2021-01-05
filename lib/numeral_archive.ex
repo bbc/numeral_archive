@@ -45,7 +45,7 @@ defmodule NumeralArchive do
     first_interval = Enum.at(first_stage, 0)
     {sum, count} = first_interval
 
-    Math.mean(sum, count) |> r()
+    Math.mean(sum, count) |> format_average()
   end
 
   def mean(series, :all) do
@@ -53,13 +53,13 @@ defmodule NumeralArchive do
     |> Enum.map(fn stage ->
       {sum, count} = Series.TimeInterval.reduce_multiple(stage)
 
-      Math.mean(sum, count) |> r()
+      Math.mean(sum, count) |> format_average()
     end)
   end
 
-  defp r(nil), do: nil
+  defp format_average(nil), do: nil
 
-  defp r(number), do: Float.round(number, 2)
+  defp format_average(number), do: Float.round(number, 2)
 
   defp summary_line(from, till, average) do
     case average do

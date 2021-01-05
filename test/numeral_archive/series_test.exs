@@ -7,7 +7,7 @@ defmodule NumeralArchive.SeriesTest do
     series = Series.init()
 
     assert {
-             0,
+             1,
              [
                [{5000, 1}, {0, 0}, {0, 0}, {0, 0}, {0, 0}],
                [{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}]
@@ -21,7 +21,7 @@ defmodule NumeralArchive.SeriesTest do
     series = Series.increment(series, 2_000)
 
     assert {
-             0,
+             1,
              [
                [{7_000, 2}, {0, 0}, {0, 0}, {0, 0}, {0, 0}],
                [{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}]
@@ -31,13 +31,13 @@ defmodule NumeralArchive.SeriesTest do
 
   test "calculates very first minute average, and inserts at stage one" do
     series =
-      {0,
+      {1,
        [
          [{5_000, 10}, {0, 0}, {0, 0}, {0, 0}, {0, 0}],
          [{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}]
        ]}
 
-    assert {1,
+    assert {2,
             [
               [{0, 0}, {5_000, 10}, {0, 0}, {0, 0}, {0, 0}],
               [{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}]
@@ -46,16 +46,16 @@ defmodule NumeralArchive.SeriesTest do
 
   test "moves last 5 minute average to next stage" do
     series =
-      {5,
+      {6,
        [
          [{5_000, 10}, {400, 1}, {200, 2}, {250, 2}, {900, 3}],
          [{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}]
        ]}
 
-    assert {6,
+    assert {7,
             [
               [{0, 0}, {5000, 10}, {400, 1}, {200, 2}, {250, 2}],
-              [{6750, 18}, {0, 0}, {0, 0}, {0, 0}, {0, 0}]
+              [{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}]
             ]} == Series.tick(series)
   end
 
