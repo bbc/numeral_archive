@@ -15,6 +15,20 @@ defmodule NumeralArchive.SeriesTest do
            } == Series.increment(series, 5_000)
   end
 
+  test "adds new increment to existing" do
+    series = Series.init()
+
+    series = Series.increment(series, 2_000)
+
+    assert {
+             0,
+             [
+               [{7_000, 2}, {0, 0}, {0, 0}, {0, 0}, {0, 0}],
+               [{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}]
+             ]
+           } == Series.increment(series, 5_000)
+  end
+
   test "calculates very first minute average, and inserts at stage one" do
     series =
       {0,

@@ -12,7 +12,13 @@ defmodule NumeralArchive do
     [mean(series, :first) | mean(series, :all)]
   end
 
-  def summary(series, {interval_value, interval_unit} \\ {1, "m"}) do
+  def summary(series, interval_data \\ {1, "m"})
+
+  def summary({_tick_counter, series}, interval_data) do
+    summary(series, interval_data)
+  end
+
+  def summary(series, {interval_value, interval_unit}) do
     stage_count = Series.stage_count(series)
 
     [last_time_period, stage_one_average, stage_two_average] = to_array(series)

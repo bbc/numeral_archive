@@ -117,4 +117,158 @@ defmodule NumeralArchiveTest do
       assert expected_summary == NumeralArchive.summary(elem(actual, 1))
     end
   end
+
+  test "ticks - step by step" do
+    series = NumeralArchive.new_series()
+    series = NumeralArchive.increment(series, 100)
+
+    assert {1,
+            [
+              [{100, 1}, {0, 0}, {0, 0}, {0, 0}, {0, 0}],
+              [{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}]
+            ]} == series
+
+    # 1 minute passes
+    series = NumeralArchive.tick(series)
+
+    assert {2,
+            [
+              [{0, 0}, {100, 1}, {0, 0}, {0, 0}, {0, 0}],
+              [{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}]
+            ]} == series
+
+    # 1 minute passes
+    series = NumeralArchive.tick(series)
+
+    assert {3,
+            [
+              [{0, 0}, {0, 0}, {100, 1}, {0, 0}, {0, 0}],
+              [{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}]
+            ]} == series
+
+    series = NumeralArchive.increment(series, 101)
+
+    assert {3,
+            [
+              [{101, 1}, {0, 0}, {100, 1}, {0, 0}, {0, 0}],
+              [{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}]
+            ]} == series
+
+    # 1 minute passes
+    series = NumeralArchive.tick(series)
+
+    assert {4,
+            [
+              [{0, 0}, {101, 1}, {0, 0}, {100, 1}, {0, 0}],
+              [{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}]
+            ]} == series
+
+    # 1 minute passes
+    series = NumeralArchive.tick(series)
+
+    assert {5,
+            [
+              [{0, 0}, {0, 0}, {101, 1}, {0, 0}, {100, 1}],
+              [{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}]
+            ]} == series
+
+    # 1 minute passes
+    series = NumeralArchive.tick(series)
+
+    assert {6,
+            [
+              [{0, 0}, {0, 0}, {0, 0}, {101, 1}, {0, 0}],
+              [{201, 2}, {0, 0}, {0, 0}, {0, 0}, {0, 0}]
+            ]} == series
+
+    series = NumeralArchive.increment(series, 102)
+
+    assert {6,
+            [
+              [{102, 1}, {0, 0}, {0, 0}, {101, 1}, {0, 0}],
+              [{201, 2}, {0, 0}, {0, 0}, {0, 0}, {0, 0}]
+            ]} == series
+
+    # 1 minute passes
+    series = NumeralArchive.tick(series)
+
+    assert {7,
+            [
+              [{0, 0}, {102, 1}, {0, 0}, {0, 0}, {101, 1}],
+              [{201, 2}, {0, 0}, {0, 0}, {0, 0}, {0, 0}]
+            ]} == series
+
+    # 1 minute passes
+    series = NumeralArchive.tick(series)
+
+    expectation_msg =
+      ~s({101, 1} should drop off first stage, as it's already been counted in the first step of stage 2.)
+
+    assert {8,
+            [
+              [{0, 0}, {0, 0}, {102, 1}, {0, 0}, {0, 0}],
+              [{201, 2}, {0, 0}, {0, 0}, {0, 0}, {0, 0}]
+            ]} == series,
+           expectation_msg
+
+    # 1 minute passes
+    series = NumeralArchive.tick(series)
+
+    assert {9,
+            [
+              [{0, 0}, {0, 0}, {0, 0}, {102, 1}, {0, 0}],
+              [{201, 2}, {0, 0}, {0, 0}, {0, 0}, {0, 0}]
+            ]} == series
+
+    # 1 minute passes
+    series = NumeralArchive.tick(series)
+
+    assert {10,
+            [
+              [{0, 0}, {0, 0}, {0, 0}, {0, 0}, {102, 1}],
+              [{201, 2}, {0, 0}, {0, 0}, {0, 0}, {0, 0}]
+            ]} == series
+
+    series = NumeralArchive.increment(series, 103)
+
+    # 1 minute passes
+    series = NumeralArchive.tick(series)
+
+    assert {11,
+            [
+              [{0, 0}, {103, 1}, {0, 0}, {0, 0}, {0, 0}],
+              [{205, 2}, {201, 2}, {0, 0}, {0, 0}, {0, 0}]
+            ]} == series,
+           "{103, 1} + {102, 1} becomes first step in stage 2"
+
+    # 3 minute pass
+    series = NumeralArchive.tick(series)
+    series = NumeralArchive.tick(series)
+    series = NumeralArchive.tick(series)
+
+    assert {14,
+            [
+              [{0, 0}, {0, 0}, {0, 0}, {0, 0}, {103, 1}],
+              [{205, 2}, {201, 2}, {0, 0}, {0, 0}, {0, 0}]
+            ]} == series
+
+    # 1 minute passes
+    series = NumeralArchive.tick(series)
+
+    expectation_msg =
+      ~s({103, 1} should drop off first stage, as it's already been counted in the first step of stage 2.)
+
+    assert {15,
+            [
+              [{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}],
+              [{205, 2}, {201, 2}, {0, 0}, {0, 0}, {0, 0}]
+            ]} == series,
+           expectation_msg
+
+    expected_summary = ~s(0m -> 1m ago: No data.
+0m -> 5m ago: No data.
+5m -> 30m ago: 101.5 average.)
+
+    assert expected_summary == NumeralArchive.summary(series)
+  end
 end

@@ -8,7 +8,7 @@ defmodule NumeralArchive.Series do
 
   def init do
     stage = List.duplicate(TimeInterval.new(), @stage_size)
-    {0, List.duplicate(stage, @stage_count)}
+    {1, List.duplicate(stage, @stage_count)}
   end
 
   def tick({tick_counter, series}) do
@@ -32,7 +32,7 @@ defmodule NumeralArchive.Series do
 
   defp increment_tick_counter(series, tick_counter), do: {tick_counter + 1, series}
 
-  defp which_stages(counter) when rem(counter, @stage_size) == 0 and counter >= @stage_size do
+  defp which_stages(counter) when rem(counter, @stage_size) == 0 and counter > 1 do
     @all_stages
   end
 
