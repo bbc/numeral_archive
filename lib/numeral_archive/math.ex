@@ -20,5 +20,9 @@ defmodule NumeralArchive.Math do
     end
   end
 
+  def round(nil), do: nil
+
+  def round(number), do: Float.round(number, 2)
+
   defp numbers_only(arr), do: Enum.filter(arr, &is_number/1)
 end

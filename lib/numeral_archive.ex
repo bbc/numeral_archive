@@ -3,69 +3,15 @@ defmodule NumeralArchive do
   Documentation for NumeralArchive.
   """
   alias NumeralArchive.{Math, Series}
+  @type time_snapshot :: NumeralArchive.Series.TimeSnapshot.t()
+  @type stage :: NumeralArchive.Series.Stage.t()
 
-  defdelegate new_series(), to: NumeralArchive.Series, as: :init
+  @default_statistic NumeralArchive.Statistic.Mean
+
+  defdelegate new_series(statistic \\ @default_statistic), to: NumeralArchive.Series, as: :init
   defdelegate tick(series), to: NumeralArchive.Series
   defdelegate tick_count(series), to: NumeralArchive.Series
   defdelegate increment(series, value), to: NumeralArchive.Series
-
-  def to_array(series) do
-    [mean(series, :first) | mean(series, :all)]
-  end
-
-  def summary(series, tick_interval \\ {1, "m"})
-
-  def summary({_tick_counter, series}, tick_interval) do
-    summary(series, tick_interval)
-  end
-
-  def summary(series, {interval_value, interval_unit}) do
-    stage_count = Series.stage_count(series)
-
-    [last_time_period, stage_one_average, stage_two_average] = to_array(series)
-
-    Enum.join(
-      [
-        summary_line("0#{interval_unit}", "#{interval_value}#{interval_unit}", last_time_period),
-        summary_line(
-          "0#{interval_unit}",
-          "#{stage_count * interval_value}#{interval_unit}",
-          stage_one_average
-        ),
-        summary_line(
-          "#{stage_count * interval_value}#{interval_unit}",
-          "#{(stage_count + 1) * stage_count}#{interval_unit}",
-          stage_two_average
-        )
-      ],
-      "\n"
-    )
-  end
-
-  def mean([first_stage | _rest], :first) do
-    first_interval = Enum.at(first_stage, 0)
-    {sum, count} = first_interval
-
-    Math.mean(sum, count) |> format_average()
-  end
-
-  def mean(series, :all) do
-    series
-    |> Enum.map(fn stage ->
-      {sum, count} = Series.TimeSnapshot.reduce_multiple(stage)
-
-      Math.mean(sum, count) |> format_average()
-    end)
-  end
-
-  defp format_average(nil), do: nil
-
-  defp format_average(number), do: Float.round(number, 2)
-
-  defp summary_line(from, till, average) do
-    case average do
-      nil -> ~s(#{from} -> #{till} ago: No data.)
-      average -> ~s(#{from} -> #{till} ago: #{average} average.)
-    end
-  end
+  defdelegate to_array(series), to: NumeralArchive.Report
+  defdelegate summary(series, tick_interval \\ {1, "m"}), to: NumeralArchive.Report
 end

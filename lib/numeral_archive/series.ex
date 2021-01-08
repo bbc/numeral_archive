@@ -6,24 +6,27 @@ defmodule NumeralArchive.Series do
   @all_stages [1, 0]
   @first_stage [0]
 
-  def init do
+  def init(statistic) do
     stage = List.duplicate(TimeSnapshot.new(), @stage_size)
-    {1, List.duplicate(stage, @stage_count)}
+    {0, statistic, List.duplicate(stage, @stage_count)}
   end
 
-  def tick({tick_counter, series}) do
-    tick_stages = which_stages(tick_counter)
+  def tick({tick_counter, statistic, stages}) do
+    {tick_counter, stages} = {tick_counter + 1, stages}
 
-    series
-    |> tick_stages(tick_stages)
-    |> increment_tick_counter(tick_counter)
+    stage_indexes_to_alter = which_stages(tick_counter)
+
+    stages = tick_stages(stages, statistic, stage_indexes_to_alter)
+
+    {tick_counter, statistic, stages}
   end
 
   def tick_count(series), do: elem(series, 0)
 
-  def increment({tick_counter, [[{sum, count} | first_stage_rest] | stages]}, value) do
+  def increment({tick_counter, statistic, [[{sum, count} | first_stage_rest] | stages]}, value) do
     {
       tick_counter,
+      statistic,
       [[{sum + value, count + 1} | first_stage_rest] | stages]
     }
   end
@@ -32,8 +35,6 @@ defmodule NumeralArchive.Series do
     Enum.count(stage_one)
   end
 
-  defp increment_tick_counter(series, tick_counter), do: {tick_counter + 1, series}
-
   defp which_stages(counter) when rem(counter, @stage_size) == 0 and counter > 1 do
     @all_stages
   end
@@ -41,21 +42,22 @@ defmodule NumeralArchive.Series do
   defp which_stages(_counter), do: @first_stage
 
   defp tick_stages(
-         series,
+         stages,
+         statistic,
          tick_stages
        ) do
     tick_stages
-    |> Enum.reduce(series, &promote_time_interval/2)
+    |> Enum.reduce(stages, &promote_time_interval(&1, &2, statistic))
   end
 
-  defp promote_time_interval(stage_index = 0, series) do
-    Stage.tick_stage(series, stage_index, TimeSnapshot.new())
+  defp promote_time_interval(stage_index = 0, stages, _statistic) do
+    Stage.tick_stage(stages, stage_index, TimeSnapshot.new())
   end
 
-  defp promote_time_interval(stage_index, series) do
-    previous_stage = Stage.previous_stage(series, stage_index)
-    time_interval = Stage.time_interval(previous_stage)
+  defp promote_time_interval(stage_index, stages, statistic) do
+    previous_stage = Stage.previous_stage(stages, stage_index)
+    snapshot = statistic.reduce_to_snapshot(previous_stage)
 
-    Stage.tick_stage(series, stage_index, time_interval)
+    Stage.tick_stage(stages, stage_index, snapshot)
   end
 end
