@@ -42,7 +42,7 @@ The `tick_counter` stores a count of how many times `NumeralArchive.tick/1` is c
 The series structure looks like this:
 ```
 {
-  tick_counter,
+  tick_counter, strategy,
   [
     [{sum, count}, {sum, count}, {sum, count}, {sum, count}, {sum, count}],
     [{sum, count}, {sum, count}, {sum, count}, {sum, count}, {sum, count}]
