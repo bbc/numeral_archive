@@ -13,7 +13,7 @@ Over time, the granularity of the data will become less focussed, which is how t
 ```elixir
 def deps do
   [
-    {:numeral_archive, git: "bbc/numeral_archive"}
+    {:numeral_archive, git: "https://github.com/bbc/numeral_archive"}
   ]
 end
 ```
