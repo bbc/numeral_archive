@@ -11,9 +11,6 @@ defmodule NumeralArchive.Math do
     nums = numbers_only(array)
 
     Enum.reduce(nums, 0, fn
-      {sum, count}, total ->
-        mean(sum / count) + total
-
       value, total ->
         total + value
     end)

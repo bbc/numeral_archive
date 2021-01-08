@@ -1,7 +1,6 @@
 defmodule NumeralArchive.SeriesTest do
   use ExUnit.Case
   alias NumeralArchive.Series
-  alias NumeralArchive.Series.TimeInterval
 
   test "increments record to keep average of" do
     series = Series.init()
