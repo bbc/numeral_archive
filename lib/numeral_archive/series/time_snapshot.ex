@@ -1,4 +1,4 @@
-defmodule NumeralArchive.Series.TimeInterval do
+defmodule NumeralArchive.Series.TimeSnapshot do
   @init_sum 0
   @init_count 0
 

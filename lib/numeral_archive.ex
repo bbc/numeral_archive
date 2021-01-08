@@ -51,7 +51,7 @@ defmodule NumeralArchive do
   def mean(series, :all) do
     series
     |> Enum.map(fn stage ->
-      {sum, count} = Series.TimeInterval.reduce_multiple(stage)
+      {sum, count} = Series.TimeSnapshot.reduce_multiple(stage)
 
       Math.mean(sum, count) |> format_average()
     end)

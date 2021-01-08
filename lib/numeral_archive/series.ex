@@ -1,5 +1,5 @@
 defmodule NumeralArchive.Series do
-  alias NumeralArchive.Series.{Stage, TimeInterval}
+  alias NumeralArchive.Series.{Stage, TimeSnapshot}
 
   @stage_size 5
   @stage_count 2
@@ -7,7 +7,7 @@ defmodule NumeralArchive.Series do
   @first_stage [0]
 
   def init do
-    stage = List.duplicate(TimeInterval.new(), @stage_size)
+    stage = List.duplicate(TimeSnapshot.new(), @stage_size)
     {1, List.duplicate(stage, @stage_count)}
   end
 
@@ -47,7 +47,7 @@ defmodule NumeralArchive.Series do
   end
 
   defp promote_time_interval(stage_index = 0, series) do
-    Stage.tick_stage(series, stage_index, TimeInterval.new())
+    Stage.tick_stage(series, stage_index, TimeSnapshot.new())
   end
 
   defp promote_time_interval(stage_index, series) do

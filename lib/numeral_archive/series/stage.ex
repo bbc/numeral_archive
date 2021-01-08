@@ -2,10 +2,10 @@ defmodule NumeralArchive.Series.Stage do
   @moduledoc """
   Helpers for manipulating a stage.
   """
-  alias NumeralArchive.Series.TimeInterval
+  alias NumeralArchive.Series.TimeSnapshot
 
   def time_interval(stage) do
-    TimeInterval.reduce_multiple(stage)
+    TimeSnapshot.reduce_multiple(stage)
   end
 
   def tick_stage(series, stage_index, new_time_interval_data) do
