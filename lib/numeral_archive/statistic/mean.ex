@@ -8,6 +8,11 @@ defmodule NumeralArchive.Statistic.Mean do
   @behaviour NumeralArchive.Statistic
 
   @impl NumeralArchive.Statistic
+  def increment(_time_snapshot = {sum, count}, value) do
+    {sum + value, count + 1}
+  end
+
+  @impl NumeralArchive.Statistic
   def reduce_to_snapshot(stage) do
     Enum.reduce(stage, TimeSnapshot.new(), fn {sum, count}, {total_sum, total_count} ->
       {total_sum + sum, total_count + count}

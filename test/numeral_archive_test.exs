@@ -1,5 +1,6 @@
 defmodule NumeralArchiveTest do
   use ExUnit.Case
+  import TestHelper, only: [process_data_set: 2]
 
   test "builds array representation of a series" do
     series =
@@ -10,16 +11,6 @@ defmodule NumeralArchiveTest do
        ]}
 
     assert [140.0, 230.77, 316.67] == NumeralArchive.to_array(series)
-  end
-
-  def process_data_set(series, data_set) do
-    data_set
-    |> Enum.reduce(series, fn values, series ->
-      # Add batches of values to find average of, before calling `tick`
-      # to simulate each passing minute
-      Enum.reduce(values, series, &NumeralArchive.increment(&2, &1))
-      |> NumeralArchive.tick()
-    end)
   end
 
   test "builds text summary of results" do

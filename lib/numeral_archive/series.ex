@@ -23,11 +23,14 @@ defmodule NumeralArchive.Series do
 
   def tick_count(series), do: elem(series, 0)
 
-  def increment({tick_counter, statistic, [[{sum, count} | first_stage_rest] | stages]}, value) do
+  def increment(
+        {tick_counter, statistic, [[first_step_of_first_stage | first_stage_rest] | stages]},
+        value
+      ) do
     {
       tick_counter,
       statistic,
-      [[{sum + value, count + 1} | first_stage_rest] | stages]
+      [[statistic.increment(first_step_of_first_stage, value) | first_stage_rest] | stages]
     }
   end
 
