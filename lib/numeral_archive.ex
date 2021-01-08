@@ -2,13 +2,12 @@ defmodule NumeralArchive do
   @moduledoc """
   Documentation for NumeralArchive.
   """
-  alias NumeralArchive.{Math, Series}
   @type time_snapshot :: NumeralArchive.Series.TimeSnapshot.t()
   @type stage :: NumeralArchive.Series.Stage.t()
 
-  @default_statistic NumeralArchive.Statistic.Mean
+  @default_strategy NumeralArchive.Strategy.Mean
 
-  defdelegate new_series(statistic \\ @default_statistic), to: NumeralArchive.Series, as: :init
+  defdelegate new_series(strategy \\ @default_strategy), to: NumeralArchive.Series, as: :init
   defdelegate tick(series), to: NumeralArchive.Series
   defdelegate tick_count(series), to: NumeralArchive.Series
   defdelegate increment(series, value), to: NumeralArchive.Series

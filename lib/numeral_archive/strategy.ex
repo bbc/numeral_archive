@@ -1,6 +1,6 @@
-defmodule NumeralArchive.Statistic do
+defmodule NumeralArchive.Strategy do
   @moduledoc """
-  A behaviour that a statistic must implement, to be supported.
+  A behaviour that a strategy must implement, to be supported.
   """
 
   @type value :: Integer.t()

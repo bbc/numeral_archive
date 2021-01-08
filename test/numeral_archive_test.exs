@@ -4,7 +4,7 @@ defmodule NumeralArchiveTest do
 
   test "builds array representation of a series" do
     series =
-      {234, NumeralArchive.Statistic.Mean,
+      {234, NumeralArchive.Strategy.Mean,
        [
          [{700, 5}, {400, 2}, {1_200, 3}, {200, 2}, {500, 1}],
          [{600, 2}, {400, 2}, {300, 3}, {2_100, 3}, {400, 2}]
@@ -16,7 +16,7 @@ defmodule NumeralArchiveTest do
   test "builds text summary of results" do
     series = {
       345,
-      NumeralArchive.Statistic.Mean,
+      NumeralArchive.Strategy.Mean,
       [
         [{700, 5}, {400, 2}, {1_200, 3}, {200, 2}, {500, 1}],
         [{600, 2}, {400, 2}, {300, 3}, {2_100, 3}, {400, 2}]
@@ -46,7 +46,7 @@ defmodule NumeralArchiveTest do
     test "a small data set", %{fixture_one: data_points} do
       actual = process_data_set(NumeralArchive.new_series(), data_points)
 
-      assert {2, NumeralArchive.Statistic.Mean,
+      assert {2, NumeralArchive.Strategy.Mean,
               [
                 [{0, 0}, {305, 6}, {180, 5}, {0, 0}, {0, 0}],
                 [{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}]
@@ -66,7 +66,7 @@ defmodule NumeralArchiveTest do
     test "many ticks", %{fixture_two: data_points} do
       actual = process_data_set(NumeralArchive.new_series(), data_points)
 
-      assert {201, NumeralArchive.Statistic.Mean,
+      assert {201, NumeralArchive.Strategy.Mean,
               [
                 [{0, 0}, {200, 1}, {199, 1}, {198, 1}, {197, 1}],
                 [{985, 5}, {960, 5}, {935, 5}, {910, 5}, {885, 5}]
@@ -86,7 +86,7 @@ defmodule NumeralArchiveTest do
     test "when average is increasing test", %{incr_data: data_points} do
       actual = process_data_set(NumeralArchive.new_series(), data_points)
 
-      assert {167, NumeralArchive.Statistic.Mean,
+      assert {167, NumeralArchive.Strategy.Mean,
               [
                 [{0, 0}, {1497, 3}, {1488, 3}, {1479, 3}, {1470, 3}],
                 [{7305, 15}, {7080, 15}, {6855, 15}, {6630, 15}, {6405, 15}]
@@ -102,7 +102,7 @@ defmodule NumeralArchiveTest do
     test "when average is decreasing test", %{decr_data: data_points} do
       actual = process_data_set(NumeralArchive.new_series(), data_points)
 
-      assert {167, NumeralArchive.Statistic.Mean,
+      assert {167, NumeralArchive.Strategy.Mean,
               [
                 [{0, 0}, {3, 3}, {12, 3}, {21, 3}, {30, 3}],
                 [{195, 15}, {420, 15}, {645, 15}, {870, 15}, {1095, 15}]
@@ -120,7 +120,7 @@ defmodule NumeralArchiveTest do
     series = NumeralArchive.new_series()
     series = NumeralArchive.increment(series, 100)
 
-    assert {0, NumeralArchive.Statistic.Mean,
+    assert {0, NumeralArchive.Strategy.Mean,
             [
               [{100, 1}, {0, 0}, {0, 0}, {0, 0}, {0, 0}],
               [{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}]
@@ -129,7 +129,7 @@ defmodule NumeralArchiveTest do
     # 1 minute passes
     series = NumeralArchive.tick(series)
 
-    assert {1, NumeralArchive.Statistic.Mean,
+    assert {1, NumeralArchive.Strategy.Mean,
             [
               [{0, 0}, {100, 1}, {0, 0}, {0, 0}, {0, 0}],
               [{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}]
@@ -138,7 +138,7 @@ defmodule NumeralArchiveTest do
     # 1 minute passes
     series = NumeralArchive.tick(series)
 
-    assert {2, NumeralArchive.Statistic.Mean,
+    assert {2, NumeralArchive.Strategy.Mean,
             [
               [{0, 0}, {0, 0}, {100, 1}, {0, 0}, {0, 0}],
               [{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}]
@@ -146,7 +146,7 @@ defmodule NumeralArchiveTest do
 
     series = NumeralArchive.increment(series, 101)
 
-    assert {2, NumeralArchive.Statistic.Mean,
+    assert {2, NumeralArchive.Strategy.Mean,
             [
               [{101, 1}, {0, 0}, {100, 1}, {0, 0}, {0, 0}],
               [{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}]
@@ -155,7 +155,7 @@ defmodule NumeralArchiveTest do
     # 1 minute passes
     series = NumeralArchive.tick(series)
 
-    assert {3, NumeralArchive.Statistic.Mean,
+    assert {3, NumeralArchive.Strategy.Mean,
             [
               [{0, 0}, {101, 1}, {0, 0}, {100, 1}, {0, 0}],
               [{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}]
@@ -164,7 +164,7 @@ defmodule NumeralArchiveTest do
     # 1 minute passes
     series = NumeralArchive.tick(series)
 
-    assert {4, NumeralArchive.Statistic.Mean,
+    assert {4, NumeralArchive.Strategy.Mean,
             [
               [{0, 0}, {0, 0}, {101, 1}, {0, 0}, {100, 1}],
               [{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}]
@@ -173,7 +173,7 @@ defmodule NumeralArchiveTest do
     # 1 minute passes
     series = NumeralArchive.tick(series)
 
-    assert {5, NumeralArchive.Statistic.Mean,
+    assert {5, NumeralArchive.Strategy.Mean,
             [
               [{0, 0}, {0, 0}, {0, 0}, {101, 1}, {0, 0}],
               [{201, 2}, {0, 0}, {0, 0}, {0, 0}, {0, 0}]
@@ -181,7 +181,7 @@ defmodule NumeralArchiveTest do
 
     series = NumeralArchive.increment(series, 102)
 
-    assert {5, NumeralArchive.Statistic.Mean,
+    assert {5, NumeralArchive.Strategy.Mean,
             [
               [{102, 1}, {0, 0}, {0, 0}, {101, 1}, {0, 0}],
               [{201, 2}, {0, 0}, {0, 0}, {0, 0}, {0, 0}]
@@ -190,7 +190,7 @@ defmodule NumeralArchiveTest do
     # 1 minute passes
     series = NumeralArchive.tick(series)
 
-    assert {6, NumeralArchive.Statistic.Mean,
+    assert {6, NumeralArchive.Strategy.Mean,
             [
               [{0, 0}, {102, 1}, {0, 0}, {0, 0}, {101, 1}],
               [{201, 2}, {0, 0}, {0, 0}, {0, 0}, {0, 0}]
@@ -202,7 +202,7 @@ defmodule NumeralArchiveTest do
     expectation_msg =
       ~s({101, 1} should drop off first stage, as it's already been counted in the first step of stage 2.)
 
-    assert {7, NumeralArchive.Statistic.Mean,
+    assert {7, NumeralArchive.Strategy.Mean,
             [
               [{0, 0}, {0, 0}, {102, 1}, {0, 0}, {0, 0}],
               [{201, 2}, {0, 0}, {0, 0}, {0, 0}, {0, 0}]
@@ -212,7 +212,7 @@ defmodule NumeralArchiveTest do
     # 1 minute passes
     series = NumeralArchive.tick(series)
 
-    assert {8, NumeralArchive.Statistic.Mean,
+    assert {8, NumeralArchive.Strategy.Mean,
             [
               [{0, 0}, {0, 0}, {0, 0}, {102, 1}, {0, 0}],
               [{201, 2}, {0, 0}, {0, 0}, {0, 0}, {0, 0}]
@@ -221,7 +221,7 @@ defmodule NumeralArchiveTest do
     # 1 minute passes
     series = NumeralArchive.tick(series)
 
-    assert {9, NumeralArchive.Statistic.Mean,
+    assert {9, NumeralArchive.Strategy.Mean,
             [
               [{0, 0}, {0, 0}, {0, 0}, {0, 0}, {102, 1}],
               [{201, 2}, {0, 0}, {0, 0}, {0, 0}, {0, 0}]
@@ -232,7 +232,7 @@ defmodule NumeralArchiveTest do
     # 1 minute passes
     series = NumeralArchive.tick(series)
 
-    assert {10, NumeralArchive.Statistic.Mean,
+    assert {10, NumeralArchive.Strategy.Mean,
             [
               [{0, 0}, {103, 1}, {0, 0}, {0, 0}, {0, 0}],
               [{205, 2}, {201, 2}, {0, 0}, {0, 0}, {0, 0}]
@@ -244,7 +244,7 @@ defmodule NumeralArchiveTest do
     series = NumeralArchive.tick(series)
     series = NumeralArchive.tick(series)
 
-    assert {13, NumeralArchive.Statistic.Mean,
+    assert {13, NumeralArchive.Strategy.Mean,
             [
               [{0, 0}, {0, 0}, {0, 0}, {0, 0}, {103, 1}],
               [{205, 2}, {201, 2}, {0, 0}, {0, 0}, {0, 0}]
@@ -256,7 +256,7 @@ defmodule NumeralArchiveTest do
     expectation_msg =
       ~s({103, 1} should drop off first stage, as it's already been counted in the first step of stage 2.)
 
-    assert {14, NumeralArchive.Statistic.Mean,
+    assert {14, NumeralArchive.Strategy.Mean,
             [
               [{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}],
               [{205, 2}, {201, 2}, {0, 0}, {0, 0}, {0, 0}]

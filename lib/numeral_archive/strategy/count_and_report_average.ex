@@ -1,18 +1,18 @@
-defmodule NumeralArchive.Statistic.Count do
+defmodule NumeralArchive.Strategy.CountAndReportAverage do
   @moduledoc """
-  Calculates the mean statistic for a series
+  Counts value and reports the average per time interval.
   """
   alias NumeralArchive.Series.TimeSnapshot
-  alias NumeralArchive.Statistic.Mean
+  alias NumeralArchive.Strategy.Mean
 
-  @behaviour NumeralArchive.Statistic
+  @behaviour NumeralArchive.Strategy
 
-  @impl NumeralArchive.Statistic
+  @impl NumeralArchive.Strategy
   def increment(_time_snapshot = {sum, _count}, value) do
     {sum + value, 1}
   end
 
-  @impl NumeralArchive.Statistic
+  @impl NumeralArchive.Strategy
   def reduce_to_snapshot(stage) do
     snapshot_count = Enum.count(stage)
 
@@ -21,9 +21,9 @@ defmodule NumeralArchive.Statistic.Count do
     end)
   end
 
-  @impl NumeralArchive.Statistic
+  @impl NumeralArchive.Strategy
   def calculate(stage), do: Mean.calculate(stage)
 
-  @impl NumeralArchive.Statistic
+  @impl NumeralArchive.Strategy
   def result_postfix, do: "count"
 end

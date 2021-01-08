@@ -6,31 +6,31 @@ defmodule NumeralArchive.Series do
   @all_stages [1, 0]
   @first_stage [0]
 
-  def init(statistic) do
+  def init(strategy) do
     stage = List.duplicate(TimeSnapshot.new(), @stage_size)
-    {0, statistic, List.duplicate(stage, @stage_count)}
+    {0, strategy, List.duplicate(stage, @stage_count)}
   end
 
-  def tick({tick_counter, statistic, stages}) do
+  def tick({tick_counter, strategy, stages}) do
     {tick_counter, stages} = {tick_counter + 1, stages}
 
     stage_indexes_to_alter = which_stages(tick_counter)
 
-    stages = tick_stages(stages, statistic, stage_indexes_to_alter)
+    stages = tick_stages(stages, strategy, stage_indexes_to_alter)
 
-    {tick_counter, statistic, stages}
+    {tick_counter, strategy, stages}
   end
 
   def tick_count(series), do: elem(series, 0)
 
   def increment(
-        {tick_counter, statistic, [[first_step_of_first_stage | first_stage_rest] | stages]},
+        {tick_counter, strategy, [[first_step_of_first_stage | first_stage_rest] | stages]},
         value
       ) do
     {
       tick_counter,
-      statistic,
-      [[statistic.increment(first_step_of_first_stage, value) | first_stage_rest] | stages]
+      strategy,
+      [[strategy.increment(first_step_of_first_stage, value) | first_stage_rest] | stages]
     }
   end
 
@@ -46,20 +46,20 @@ defmodule NumeralArchive.Series do
 
   defp tick_stages(
          stages,
-         statistic,
+         strategy,
          tick_stages
        ) do
     tick_stages
-    |> Enum.reduce(stages, &promote_time_interval(&1, &2, statistic))
+    |> Enum.reduce(stages, &promote_time_interval(&1, &2, strategy))
   end
 
-  defp promote_time_interval(stage_index = 0, stages, _statistic) do
+  defp promote_time_interval(stage_index = 0, stages, _strategy) do
     Stage.tick_stage(stages, stage_index, TimeSnapshot.new())
   end
 
-  defp promote_time_interval(stage_index, stages, statistic) do
+  defp promote_time_interval(stage_index, stages, strategy) do
     previous_stage = Stage.previous_stage(stages, stage_index)
-    snapshot = statistic.reduce_to_snapshot(previous_stage)
+    snapshot = strategy.reduce_to_snapshot(previous_stage)
 
     Stage.tick_stage(stages, stage_index, snapshot)
   end
