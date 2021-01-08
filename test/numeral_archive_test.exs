@@ -23,9 +23,9 @@ defmodule NumeralArchiveTest do
       ]
     }
 
-    expected = ~s(0m -> 1m ago: 140.0 average \(mean\).
-0m -> 5m ago: 230.77 average \(mean\).
-5m -> 30m ago: 316.67 average \(mean\).)
+    expected = ~s(0m -> 1m ago: 140.0 average \(mean per 1m\).
+0m -> 5m ago: 230.77 average \(mean per 1m\).
+5m -> 30m ago: 316.67 average \(mean per 1m\).)
 
     assert expected == NumeralArchive.summary(series, {1, "m"})
   end
@@ -94,8 +94,8 @@ defmodule NumeralArchiveTest do
 
       assert [nil, 494.5, 457.0] == NumeralArchive.to_array(actual)
       expected_summary = ~s(0m -> 1m ago: No data.
-0m -> 5m ago: 494.5 average \(mean\).
-5m -> 30m ago: 457.0 average \(mean\).)
+0m -> 5m ago: 494.5 average \(mean per 1m\).
+5m -> 30m ago: 457.0 average \(mean per 1m\).)
       assert expected_summary == NumeralArchive.summary(actual)
     end
 
@@ -110,8 +110,8 @@ defmodule NumeralArchiveTest do
 
       assert [nil, 5.5, 43.0] == NumeralArchive.to_array(actual)
       expected_summary = ~s(0m -> 1m ago: No data.
-0m -> 5m ago: 5.5 average \(mean\).
-5m -> 30m ago: 43.0 average \(mean\).)
+0m -> 5m ago: 5.5 average \(mean per 1m\).
+5m -> 30m ago: 43.0 average \(mean per 1m\).)
       assert expected_summary == NumeralArchive.summary(actual)
     end
   end
@@ -265,7 +265,7 @@ defmodule NumeralArchiveTest do
 
     expected_summary = ~s(0m -> 1m ago: No data.
 0m -> 5m ago: No data.
-5m -> 30m ago: 101.5 average \(mean\).)
+5m -> 30m ago: 101.5 average \(mean per 1m\).)
 
     assert expected_summary == NumeralArchive.summary(series)
   end

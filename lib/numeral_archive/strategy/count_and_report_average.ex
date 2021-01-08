@@ -25,5 +25,5 @@ defmodule NumeralArchive.Strategy.CountAndReportAverage do
   def calculate(stage), do: Mean.calculate(stage)
 
   @impl NumeralArchive.Strategy
-  def result_postfix, do: "averaged count"
+  def result_postfix(_time_interval = {value, unit}), do: "averaged count (per #{value}#{unit})"
 end

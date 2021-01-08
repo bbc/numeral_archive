@@ -4,6 +4,7 @@ defmodule NumeralArchive.Strategy do
   """
 
   @type value :: Integer.t()
+  @type time_interval :: {Integer.t(), String.t()}
 
   @doc """
   Defines how data is promoted to the next stage in a series.
@@ -18,7 +19,7 @@ defmodule NumeralArchive.Strategy do
   @doc """
   Defines postfix in summary to explain the results.
   """
-  @callback result_postfix :: String.t()
+  @callback result_postfix(time_interval) :: String.t()
 
   @doc """
   Defines how data is accumulated.

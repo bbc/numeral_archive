@@ -28,7 +28,7 @@ defmodule NumeralArchive.Strategy.CountAndReportAverageTest do
     assert [nil, 2.75, 3.0] == NumeralArchive.to_array(series)
 
     assert ~s(0m -> 1m ago: No data.
-0m -> 5m ago: 2.75 averaged count.
-5m -> 30m ago: 3.0 averaged count.) == NumeralArchive.summary(series)
+0m -> 5m ago: 2.75 averaged count \(per 1m\).
+5m -> 30m ago: 3.0 averaged count \(per 1m\).) == NumeralArchive.summary(series)
   end
 end

@@ -12,7 +12,10 @@ defmodule NumeralArchive.Report do
     [first_time_period_result | all]
   end
 
-  def summary(series = {_tick_counter, strategy, stages}, {interval_value, interval_unit}) do
+  def summary(
+        series = {_tick_counter, strategy, stages},
+        time_interval = {interval_value, interval_unit}
+      ) do
     stage_count = NumeralArchive.Series.stage_count(stages)
 
     [last_time_period, stage_one, stage_two] = to_array(series)
@@ -23,19 +26,19 @@ defmodule NumeralArchive.Report do
           "0#{interval_unit}",
           "#{interval_value}#{interval_unit}",
           last_time_period,
-          strategy.result_postfix()
+          strategy.result_postfix(time_interval)
         ),
         summary_line(
           "0#{interval_unit}",
           "#{stage_count * interval_value}#{interval_unit}",
           stage_one,
-          strategy.result_postfix()
+          strategy.result_postfix(time_interval)
         ),
         summary_line(
           "#{stage_count * interval_value}#{interval_unit}",
           "#{(stage_count + 1) * stage_count}#{interval_unit}",
           stage_two,
-          strategy.result_postfix()
+          strategy.result_postfix(time_interval)
         )
       ],
       "\n"

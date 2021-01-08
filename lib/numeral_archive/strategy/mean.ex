@@ -27,5 +27,5 @@ defmodule NumeralArchive.Strategy.Mean do
   end
 
   @impl NumeralArchive.Strategy
-  def result_postfix, do: "average (mean)"
+  def result_postfix(_time_interval = {value, unit}), do: "average (mean per #{value}#{unit})"
 end
