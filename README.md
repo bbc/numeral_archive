@@ -1,58 +1,51 @@
 # NumeralArchive
 
-## Installation
+Designed to store metric data, with a small memory footprint.
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `lossy_average` to your list of dependencies in `mix.exs`:
+NumeralArchive will store a series of snapshots over varying time periods, which contains a `sum` and `count` value.
+
+The snapshots can be used to work out averages over multiple time periods. This allows us to analyse trend information about a single metric's data. E.g Is it going up, or down on average?
+
+Over time, the granularity of the data will become less focussed, which is how the memory footprint is kept low.
+
+## Installation
 
 ```elixir
 def deps do
   [
-    {:numeral_archive, "~> 0.1.0"}
+    {:numeral_archive, git: "bbc/numeral_archive"}
   ]
 end
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/lossy_average](https://hexdocs.pm/lossy_average).
+## Using NumeralArchive
+### Incrementing a value
+Use `NumeralArchive.increment/2` to increment a value.
 
+### Controlling granularity
+Call `NumeralArchive.tick/1` at a regular time interval of your choosing. This will allow you to control the granularity of the data storage.
 
-## How it works
-Stores a series of averages over varying time periods (granularities).
+### Generating a summary
+`NumeralArchive.summary/1` will provide you with a text based summary of the data stored.
 
-This allows us to analyse trend information about a single metric's data.
+## How it works internally
+The data structure contains a `tick_counter` and a nested list of snapshots.
 
-E.g Is it going up, or down on average?
+Each snapshot contains `sum` and `count` data. A snapshot represents a period in time.
+- `count` is number of times the metric has been incremented.
+- `sum` is the sum of values each time the metric is incremented.
 
-The `tick counter`, counts how many times the `NumeralArchive.tick/1` function has been called. This should be called
-upon a regular time interval. This number is used to know when to move the averages onto the next slot.
+Using the snapshot, and the location of the snapshot within the list data structure, we can calculate the average over multiple time periods.
 
-For example, each time the `NumeralArchive.tick/1` is called, then
+The `tick_counter` stores a count of how many times `NumeralArchive.tick/1` is called, and based on this number, moves the snapshots through the series structure.
 
-Time Interval (TI) - Frequency that `NumeralArchive.tick/1` is called.
+The series structure looks like this:
 ```
-{<< tick counter >>,
- [
-   [{<< sum 0m->(TI) >>, << count 0m->(TI) >>}, << average (TI)->(TI * 2) >>, << average (TI * 2)->(TI * 3) >>, << average (TI * 3)->(TI * 4) >>, << average (TI * 4)->(TI * 5) >>],
-   [<< average (TI * 5)->(TI * 10) >>, << average (TI * 10)->(TI * 15) >>, << average (TI * 15)->(TI * 20) >>, << average (TI * 20)->(TI * 25) >>, << average (TI * 25)->(TI * 30) >>]
- ]}
-```
-
-For example, if the Time Interval was set to 1 minute:
-```
-{<< tick counter >>,
- [
-   [{<< sum 0m->1m >>, << count 0m->1m >>}, << average 1m->2m >>, << average 2m->3m >>, << average 3m->4m >>, << average 4m->5m >>],
-   [<< average 5m->10m >>, << average 10m->15m >>, << average 15m->20m >>, << average 20m->25m >>, << average 25m->30m >>]
- ]}
-```
-
-and if the Time Interval was set to 10 minutes:
-```
-{<< tick counter >>,
- [
-   [{<< sum 0m->10m >>, << count 0m->10m >>}, << average 10m->20m >>, << average 20m->30m >>, << average 30m->40m >>, << average 40m->50m >>],
-   [<< average 50m->100m >>, << average 100m->150m >>, << average 150m->200m >>, << average 200m->250m >>, << average 250m->300m >>]
- ]}
+{
+  tick_counter,
+  [
+    [{sum, count}, {sum, count}, {sum, count}, {sum, count}, {sum, count}],
+    [{sum, count}, {sum, count}, {sum, count}, {sum, count}, {sum, count}]
+  ]
+}
 ```
