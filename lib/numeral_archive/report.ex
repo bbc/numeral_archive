@@ -1,15 +1,12 @@
 defmodule NumeralArchive.Report do
   def to_array({_tick_counter, strategy, stages}) do
-    [[first_step_in_first_stage | _steps_in_stage] | _stages] = stages
+    [[first_step_in_first_stage | rest_of_steps_in_first_stage] | [stage_two]] = stages
 
     first_time_period_result = strategy.calculate([first_step_in_first_stage])
+    stage_one_final_result = strategy.calculate(rest_of_steps_in_first_stage)
+    second_stage_results = strategy.calculate(stage_two)
 
-    all =
-      Enum.map(stages, fn stage ->
-        strategy.calculate(stage)
-      end)
-
-    [first_time_period_result | all]
+    [first_time_period_result, stage_one_final_result, second_stage_results]
   end
 
   def summary(
@@ -29,7 +26,7 @@ defmodule NumeralArchive.Report do
           strategy.result_postfix(time_interval)
         ),
         summary_line(
-          "0#{interval_unit}",
+          "1#{interval_unit}",
           "#{stage_count * interval_value}#{interval_unit}",
           stage_one,
           strategy.result_postfix(time_interval)
