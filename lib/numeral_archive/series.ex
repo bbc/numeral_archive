@@ -19,6 +19,8 @@ defmodule NumeralArchive.Series do
     |> increment_tick_counter(tick_counter)
   end
 
+  def tick_count(series), do: elem(series, 0)
+
   def increment({tick_counter, [[{sum, count} | first_stage_rest] | stages]}, value) do
     {
       tick_counter,

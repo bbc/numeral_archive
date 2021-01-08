@@ -28,6 +28,17 @@ defmodule NumeralArchive.SeriesTest do
            } == Series.increment(series, 5_000)
   end
 
+  test "tick_count/1" do
+    series =
+      Series.init()
+      |> Series.tick()
+      |> Series.tick()
+      |> Series.tick()
+
+    assert 4 == Series.tick_count(series)
+    assert 4 == NumeralArchive.tick_count(series), "tick_count/1 should be public in NumeralArchive"
+  end
+
   test "calculates very first minute average, and inserts at stage one" do
     series =
       {1,

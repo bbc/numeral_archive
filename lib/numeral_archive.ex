@@ -6,16 +6,17 @@ defmodule NumeralArchive do
 
   defdelegate new_series(), to: NumeralArchive.Series, as: :init
   defdelegate tick(series), to: NumeralArchive.Series
+  defdelegate tick_count(series), to: NumeralArchive.Series
   defdelegate increment(series, value), to: NumeralArchive.Series
 
   def to_array(series) do
     [mean(series, :first) | mean(series, :all)]
   end
 
-  def summary(series, interval_data \\ {1, "m"})
+  def summary(series, tick_interval \\ {1, "m"})
 
-  def summary({_tick_counter, series}, interval_data) do
-    summary(series, interval_data)
+  def summary({_tick_counter, series}, tick_interval) do
+    summary(series, tick_interval)
   end
 
   def summary(series, {interval_value, interval_unit}) do
